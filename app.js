@@ -19,7 +19,7 @@ fs.readFile('index.html', (err, html) =>{
 
 });
 
-const hostname = '52.210.220.246';
+const hostname = '127.0.0.1';
 const port = '3000';
 
 //
