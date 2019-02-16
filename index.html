@@ -24,9 +24,17 @@
       var map;
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -34.397, lng: 150.644},
-          zoom: 8
+          center: {lat: 53.2707, lng: -9.0568},
+          zoom: 20
         });
+
+        // The location of Uluru
+        var galway = {lat: 53.2707, lng: -9.0568};
+        // The map, centered at Uluru
+        var map = new google.maps.Map(
+          document.getElementById('map'), {zoom: 20, center: galway});
+        // The marker, positioned at Uluru
+        var marker = new google.maps.Marker({position: galway, map: map});
       }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTtMjivtMGiX2P1xZVLwJibqfFfS5mJvI&callback=initMap"
