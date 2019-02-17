@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Simple Map</title>
+    <title>Paul's Map</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <style>
@@ -19,23 +19,115 @@
     </style>
   </head>
   <body>
+
+    <h1 id = "bigOne"></h1>
     <div id="map"></div>
+    
+    
+    <script src="https://www.gstatic.com/firebasejs/5.8.3/firebase.js"></script>
     <script>
-      var map;
-      function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 53.2707, lng: -9.0568},
-          zoom: 20
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyCoDY3NqEEwREguYtaojAIMWT3W2mel5sw",
+        authDomain: "sunny-equinox-229415.firebaseapp.com",
+        databaseURL: "https://sunny-equinox-229415.firebaseio.com",
+        projectId: "sunny-equinox-229415",
+        storageBucket: "sunny-equinox-229415.appspot.com",
+        messagingSenderId: "670236205578"
+      };
+      firebase.initializeApp(config);
+    
+      // var bigOne = document.getElementById('bigOne');
+      // var dbRef = firebase.database().ref().child('text');
+      // dbRef.on('value', snap => bigOne.innerText = snap.val());
+      //console.log("hey2  " + bigOne );
+
+      var locations = [];
+
+
+        var leadsRef = firebase.database().ref().child('Locations');
+        leadsRef.on('value', function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+              var childData = childSnapshot.val();
+              console.log("value:   " + childData );
+              locations.push(childData);
+            });
         });
 
-        // The location of Uluru
+        var myLocation = {lat: locations[0], lng: locations[1]}
+        console.log("array:   " + locations[0] );
+        console.log("array:   " + locations.length );
+
+
+        var marker = new google.maps.Marker({position: myLocation, map: map});
+
+      // dbRef.on('value', function(snapshot) {
+      //   console.log("ref " + snapshot.val());
+
+      //   console.log(typeof snapshot.val());
+
+      //     // console.log("ref " + snapshot.val().features[1]);
+      //     // // var x = snapshot.val();
+
+      //     // // for (var i = 0; i < x.length; i++)
+
+
+      //   });
+
+    </script>
+
+    <script>
+      var map;
+
+      
+      function initMap() {
+        // The location 
         var galway = {lat: 53.2707, lng: -9.0568};
-        // The map, centered at Uluru
-        var map = new google.maps.Map(
-          document.getElementById('map'), {zoom: 20, center: galway});
-        // The marker, positioned at Uluru
-        var marker = new google.maps.Marker({position: galway, map: map});
+        // The map, centered 
+        map = new google.maps.Map(
+          document.getElementById('map'), {zoom: 8, center: galway, mapTypeId: 'terrain'});
+        // The marker, positioned
+        // var marker = new google.maps.Marker({position: galway, map: map});
+
+
+        // Get a reference to the database service
+        // var database = firebase.database();
+        // console.log("hey2" + database + "Domne");
+        //var dbRef = firebase.database().ref().child('Locations');
+
+        // dbRef.set({
+        // lat: 54,
+        // lng: -5,
+        // });
+
+        //var marker = new google.maps.Marker({position: galway, map: map});
+
+        //  firebase.database().set({
+        // lat: 53,
+        // lng: -9,
+        // });
+
+        // // Create a <script> tag and set the USGS URL as the source.
+        // var script = document.createElement('script');
+        // // This example uses a local copy of the GeoJSON stored at
+        // // http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojsonp
+        // script.src = 'https://developers.google.com/maps/documentation/javascript/examples/json/earthquake_GeoJSONP.js';
+        // document.getElementsByTagName('head')[0].appendChild(script);
       }
+      
+      // // Loop through the results array and place a marker for each
+      // // set of coordinates.
+      // window.eqfeed_callback = function(results) {
+      //   for (var i = 0; i < results.features.length; i++) {
+      //     var coords = results.features[i].geometry.coordinates;
+      //     var latLng = new google.maps.LatLng(coords[1],coords[0]);
+      //     var marker = new google.maps.Marker({
+      //       position: latLng,
+      //       map: map
+      //     });
+      //   }
+      // }
+
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTtMjivtMGiX2P1xZVLwJibqfFfS5mJvI&callback=initMap"
     async defer></script>
