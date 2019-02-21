@@ -19,12 +19,10 @@
     </style>
   </head>
   <body>
-
-    <h1 id = "bigOne"></h1>
     <div id="map"></div>
     
-    
     <script src="https://www.gstatic.com/firebasejs/5.8.3/firebase.js"></script>
+
     <script>
       // Initialize Firebase
       var config = {
@@ -42,44 +40,39 @@
       // dbRef.on('value', snap => bigOne.innerText = snap.val());
       //console.log("hey2  " + bigOne );
 
-      var locations = [];
+      // var dbRef = firebase.database();
+
+      // var locations = [];
+      
 
 
-        var leadsRef = firebase.database().ref().child('Locations');
-        leadsRef.on('value', function(snapshot) {
-            snapshot.forEach(function(childSnapshot) {
-              var childData = childSnapshot.val();
-              console.log("value:   " + childData );
-              locations.push(childData);
-            });
-        });
+      // console.log("here 2:   ");
+      // console.log("features:   " + dbRef.ref().child('features').child('geometry').child('coordinates') );
 
-        var myLocation = {lat: locations[0], lng: locations[1]}
-        console.log("array:   " + locations[0] );
-        console.log("array:   " + locations.length );
+      //   dbRef.ref().child('features').child('geometry').child('coordinates').on('value', snap => {
+      //     console.log(snap);
+      //     console.log(snap.key); // this key will output users
+      //     console.log(snap.val()); // this method will return full user data object
+      //     //var coords =  snap.geometry.coordinates
+      //     var newPosition = snap.val();
+      //     // var pointlat = newPosition.lat;
+      //     // var pointlng = newPosition.lng;
+      //  });
 
+      
+      // leadsRef.on('value', snap => {
+      //   console.log(snap);
+      //   console.log(snap.key); // this key will output users
+      //   console.log(snap.val()); // this method will return full user data object
+      // });
 
-        var marker = new google.maps.Marker({position: myLocation, map: map});
-
-      // dbRef.on('value', function(snapshot) {
-      //   console.log("ref " + snapshot.val());
-
-      //   console.log(typeof snapshot.val());
-
-      //     // console.log("ref " + snapshot.val().features[1]);
-      //     // // var x = snapshot.val();
-
-      //     // // for (var i = 0; i < x.length; i++)
-
-
-      //   });
-
+      // var myLocation = { lat: locations[0], lng: locations[1] }
+      // console.log("array:   " + locations[0]);
+      // console.log("array:   " + locations.length);
     </script>
 
     <script>
       var map;
-
-      
       function initMap() {
         // The location 
         var galway = {lat: 53.2707, lng: -9.0568};
@@ -90,33 +83,48 @@
         // var marker = new google.maps.Marker({position: galway, map: map});
 
 
-        // Get a reference to the database service
-        // var database = firebase.database();
-        // console.log("hey2" + database + "Domne");
-        //var dbRef = firebase.database().ref().child('Locations');
+        // map.data.loadGeoJson(
+        //     'https://storage.googleapis.com/mapsdevsite/json/google.json');
 
-        // dbRef.set({
-        // lat: 54,
-        // lng: -5,
+        var d = new Date(); // for now
+        console.log("date:   " + d );
+        var x = d.getSeconds();
+
+        // leadsRef.child(''+x).set({
+        //   galway
         // });
+   
 
-        //var marker = new google.maps.Marker({position: galway, map: map});
+        var leadsRef = firebase.database().ref().child('features');
 
-        //  firebase.database().set({
-        // lat: 53,
-        // lng: -9,
-        // });
+        console.log("here 1:   ");
 
-        // // Create a <script> tag and set the USGS URL as the source.
-        // var script = document.createElement('script');
-        // // This example uses a local copy of the GeoJSON stored at
-        // // http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojsonp
-        // script.src = 'https://developers.google.com/maps/documentation/javascript/examples/json/earthquake_GeoJSONP.js';
+        leadsRef.on('value', function (snapshot) {
+          console.log("here 3:   " + snapshot.val() );
+
+          snapshot.forEach(function (childSnapshot) {
+            console.log("value:   " + childSnapshot.val());
+            //locations.push('' + childSnapshot.val());
+            var newPosition = childSnapshot.val();
+            var pointlat = newPosition.lat;
+            var pointlng = newPosition.lng;
+            var point = new google.maps.LatLng(newPosition.lat, newPosition.lng);
+          });
+        });
+
+        var coords = {lat: 53.2707, lng: -9.0568};
+        var marker = new google.maps.Marker({position: coords, map: map});
+        // Create a <script> tag and set the USGS URL as the source.
+          // var script = document.createElement('script');
+        // This example uses a local copy of the GeoJSON stored at
+        // http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojsonp
+        //script.src = 'https://developers.google.com/maps/documentation/javascript/examples/json/earthquake_GeoJSONP.js';
+        // script.src = 'https://sunny-equinox-229415.firebaseio.com';
         // document.getElementsByTagName('head')[0].appendChild(script);
+
       }
-      
-      // // Loop through the results array and place a marker for each
-      // // set of coordinates.
+      // Loop through the results array and place a marker for each
+      // set of coordinates.
       // window.eqfeed_callback = function(results) {
       //   for (var i = 0; i < results.features.length; i++) {
       //     var coords = results.features[i].geometry.coordinates;
@@ -127,6 +135,7 @@
       //     });
       //   }
       // }
+
 
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTtMjivtMGiX2P1xZVLwJibqfFfS5mJvI&callback=initMap"
