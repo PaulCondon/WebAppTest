@@ -4,6 +4,7 @@
     <title>Paul's Map</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
+    
     <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -18,12 +19,14 @@
       }
     </style>
   </head>
+  
   <body>
     <div id="map"></div>
+    <script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
     
-    <script src="https://www.gstatic.com/firebasejs/5.8.3/firebase.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/5.8.3/firebase.js"></script> -->
 
-    <script>
+    <!-- <script>
       // Initialize Firebase
       var config = {
         apiKey: "AIzaSyCoDY3NqEEwREguYtaojAIMWT3W2mel5sw",
@@ -34,109 +37,65 @@
         messagingSenderId: "670236205578"
       };
       firebase.initializeApp(config);
+    ;
+    </script> -->
     
-      // var bigOne = document.getElementById('bigOne');
-      // var dbRef = firebase.database().ref().child('text');
-      // dbRef.on('value', snap => bigOne.innerText = snap.val());
-      //console.log("hey2  " + bigOne );
-
-      // var dbRef = firebase.database();
-
-      // var locations = [];
-      
-
-
-      // console.log("here 2:   ");
-      // console.log("features:   " + dbRef.ref().child('features').child('geometry').child('coordinates') );
-
-      //   dbRef.ref().child('features').child('geometry').child('coordinates').on('value', snap => {
-      //     console.log(snap);
-      //     console.log(snap.key); // this key will output users
-      //     console.log(snap.val()); // this method will return full user data object
-      //     //var coords =  snap.geometry.coordinates
-      //     var newPosition = snap.val();
-      //     // var pointlat = newPosition.lat;
-      //     // var pointlng = newPosition.lng;
-      //  });
-
-      
-      // leadsRef.on('value', snap => {
-      //   console.log(snap);
-      //   console.log(snap.key); // this key will output users
-      //   console.log(snap.val()); // this method will return full user data object
-      // });
-
-      // var myLocation = { lat: locations[0], lng: locations[1] }
-      // console.log("array:   " + locations[0]);
-      // console.log("array:   " + locations.length);
-    </script>
-
+    
     <script>
-      var map;
-      function initMap() {
-        // The location 
-        var galway = {lat: 53.2707, lng: -9.0568};
-        // The map, centered 
-        map = new google.maps.Map(
-          document.getElementById('map'), {zoom: 8, center: galway, mapTypeId: 'terrain'});
-        // The marker, positioned
-        // var marker = new google.maps.Marker({position: galway, map: map});
 
+      var firebase = new Firebase("https://sunny-equinox-229415.firebaseio.com/");
 
-        // map.data.loadGeoJson(
-        //     'https://storage.googleapis.com/mapsdevsite/json/google.json');
+      /**
+       * Data object to be written to Firebase.
+       */
+      //  var firebase = new Firebase("https://spatialform.firebaseio.com");
 
-        var d = new Date(); // for now
-        console.log("date:   " + d );
-        var x = d.getSeconds();
-
-        // leadsRef.child(''+x).set({
-        //   galway
-        // });
-   
-
-        var leadsRef = firebase.database().ref().child('features');
-
-        console.log("here 1:   ");
-
-        leadsRef.on('value', function (snapshot) {
-          console.log("here 3:   " + snapshot.val() );
-
-          snapshot.forEach(function (childSnapshot) {
-            console.log("value:   " + childSnapshot.val());
-            //locations.push('' + childSnapshot.val());
-            var newPosition = childSnapshot.val();
-            var pointlat = newPosition.lat;
-            var pointlng = newPosition.lng;
-            var point = new google.maps.LatLng(newPosition.lat, newPosition.lng);
+        function initMap() {
+          var map = new google.maps.Map(document.getElementById('map'), {
+            center: {
+              lat: 39.6017,
+              lng: -110.7970
+            },
+            zoom: 14,
+            styles: [{
+              featureType: 'poi',
+              stylers: [{
+                  visibility: 'off'
+                }] // Turn off points of interest.
+            }, {
+              featureType: 'transit.station',
+              stylers: [{
+                  visibility: 'off'
+                }] // Turn off bus stations, train stations, etc.
+            }],
+            disableDoubleClickZoom: false
           });
-        });
+          map.addListener('click', function(e) {
+            firebase.push({
+              lat: e.latLng.lat(),
+              lng: e.latLng.lng()
+            });
+            var marker = new google.maps.Marker({
+              position: {
+                lat: e.latLng.lat(),
+                lng: e.latLng.lng()
+              },
+              map: map
+            });
+          });
 
-        var coords = {lat: 53.2707, lng: -9.0568};
-        var marker = new google.maps.Marker({position: coords, map: map});
-        // Create a <script> tag and set the USGS URL as the source.
-          // var script = document.createElement('script');
-        // This example uses a local copy of the GeoJSON stored at
-        // http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojsonp
-        //script.src = 'https://developers.google.com/maps/documentation/javascript/examples/json/earthquake_GeoJSONP.js';
-        // script.src = 'https://sunny-equinox-229415.firebaseio.com';
-        // document.getElementsByTagName('head')[0].appendChild(script);
-
-      }
-      // Loop through the results array and place a marker for each
-      // set of coordinates.
-      // window.eqfeed_callback = function(results) {
-      //   for (var i = 0; i < results.features.length; i++) {
-      //     var coords = results.features[i].geometry.coordinates;
-      //     var latLng = new google.maps.LatLng(coords[1],coords[0]);
-      //     var marker = new google.maps.Marker({
-      //       position: latLng,
-      //       map: map
-      //     });
-      //   }
-      // }
-
-
+          firebase.on("child_added", function(snapshot, prevChildKey) {
+            var newPosition = snapshot.val();
+            var latLng = new google.maps.LatLng(newPosition.lat,
+              newPosition.lng);
+            var marker = new google.maps.Marker({
+              position: latLng,
+              map: map
+            });
+          });
+        }
+        google.maps.event.addDomListener(window, "load", initMap);
+    
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTtMjivtMGiX2P1xZVLwJibqfFfS5mJvI&callback=initMap"
     async defer></script>
