@@ -354,13 +354,18 @@
           //   });
           // });
 
+          var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+          var labelIndex = 0;
+
           firebase.on("child_added", function(snapshot, prevChildKey) {
             var newPosition = snapshot.val();
             var latLng = new google.maps.LatLng(newPosition.lat,
               newPosition.lng);
             var marker = new google.maps.Marker({
               position: latLng,
-              map: map
+              map: map,
+              title:"Position",
+              label: labels[labelIndex++ % labels.length]
             });
           });
         }
