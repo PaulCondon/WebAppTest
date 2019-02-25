@@ -43,6 +43,8 @@
     
     <script>
 
+      var map, infoWindow;
+
       var firebase = new Firebase("https://sunny-equinox-229415.firebaseio.com/");
 
       /**
@@ -53,10 +55,11 @@
         function initMap() {
           var map = new google.maps.Map(document.getElementById('map'), {
             center: {
-              lat: 39.6017,
-              lng: -110.7970
+              lat: 53.2707, 
+              lng: -9.0568
             },
-            zoom: 14,
+            zoom: 8,
+            mapTypeId: 'satellite',
             styles: [{
               featureType: 'poi',
               stylers: [{
@@ -70,19 +73,31 @@
             }],
             disableDoubleClickZoom: false
           });
-          map.addListener('click', function(e) {
-            firebase.push({
-              lat: e.latLng.lat(),
-              lng: e.latLng.lng()
-            });
-            var marker = new google.maps.Marker({
-              position: {
-                lat: e.latLng.lat(),
-                lng: e.latLng.lng()
-              },
-              map: map
-            });
-          });
+          infoWindow = new google.maps.InfoWindow;
+
+          var pos = {
+              lat: 53.2707, 
+              lng: -9.0568
+            }
+          infoWindow.setPosition(pos);
+            infoWindow.setContent('Hazardous area.');
+            infoWindow.open(map);
+
+
+            
+          // map.addListener('click', function(e) {
+          //   firebase.push({
+          //     lat: e.latLng.lat(),
+          //     lng: e.latLng.lng()
+          //   });
+          //   var marker = new google.maps.Marker({
+          //     position: {
+          //       lat: e.latLng.lat(),
+          //       lng: e.latLng.lng()
+          //     },
+          //     map: map
+          //   });
+          // });
 
           firebase.on("child_added", function(snapshot, prevChildKey) {
             var newPosition = snapshot.val();
