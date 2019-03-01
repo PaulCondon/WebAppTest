@@ -330,6 +330,16 @@
               }
             ]
           });
+
+          
+          var myLatLng = {lat: 53.363, lng: -9.044};
+
+          var marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            title: 'Hello World!'
+          });
+
           infoWindow = new google.maps.InfoWindow;
 
           var pos = {
@@ -358,16 +368,21 @@
           var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
           var labelIndex = 0;
 
+
+          // var newPosition = snapshot.val();
+          // var latLng = new google.maps.LatLng(newPosition.lat,
+          //     newPosition.lng);
+          // var marker = new google.maps.Marker({
+          //     position: latLng,
+          //     map: map,
+          //   });
+
           firebase.on("child_changed", function(snapshot, prevChildKey) {
             var newPosition = snapshot.val();
             var latLng = new google.maps.LatLng(newPosition.lat,
               newPosition.lng);
-            var marker = new google.maps.Marker({
-              position: latLng,
-              map: map,
-              title:"Position",
-              label: labels[labelIndex++ % labels.length]
-            });
+
+              marker.setPosition(latLng);
           });
         }
 
