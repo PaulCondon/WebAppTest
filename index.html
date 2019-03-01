@@ -43,6 +43,7 @@
     
     <script>
 
+      //com
       var map, infoWindow;
 
       var firebase = new Firebase("https://sunny-equinox-229415.firebaseio.com/");
@@ -357,7 +358,7 @@
           var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
           var labelIndex = 0;
 
-          firebase.on("child_added", function(snapshot, prevChildKey) {
+          firebase.on("child_changed", function(snapshot, prevChildKey) {
             var newPosition = snapshot.val();
             var latLng = new google.maps.LatLng(newPosition.lat,
               newPosition.lng);
