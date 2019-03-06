@@ -337,7 +337,8 @@
           var marker = new google.maps.Marker({
             position: myLatLng,
             map: map,
-            title: 'Hello World!'
+            title: 'Hello World!',
+            animation: google.maps.Animation.DROP,
           });
 
           infoWindow = new google.maps.InfoWindow;
@@ -377,16 +378,47 @@
           //     map: map,
           //   });
 
+          //var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+          //gs://sunny-equinox-229415.appspot.com/high_heart_rate-512.png
+          var image = 'https://firebasestorage.googleapis.com/v0/b/sunny-equinox-229415.appspot.com/o/high_heart_rate-512_small50.png?alt=media&token=06b00607-34ac-4d06-83bf-8bc599e607c0';
+          var image2 = 'https://firebasestorage.googleapis.com/v0/b/sunny-equinox-229415.appspot.com/o/68-512_small_redMan.png?alt=media&token=a4242019-e05b-4c45-9300-c2094f786b5e';
+          // var image = {
+          //   url: 'https://firebasestorage.googleapis.com/v0/b/sunny-equinox-229415.appspot.com/o/high_heart_rate-512.png?alt=media&token=e5d5c4ba-a875-426d-9ebd-107f9a484fe9',
+          //   // This marker is 20 pixels wide by 32 pixels high.
+          //   //size: new google.maps.Size(20, 32),
+          //   // The origin for this image is (0, 0).
+          //   //origin: new google.maps.Point(0, 0),
+          //   // The anchor for this image is the base of the flagpole at (0, 32).
+          //   //anchor: new google.maps.Point(0, 32)
+          // };
+
           firebase.on("child_changed", function(snapshot, prevChildKey) {
             var newPosition = snapshot.val();
             var latLng = new google.maps.LatLng(newPosition.lat,
               newPosition.lng);
 
               marker.setPosition(latLng);
+
+              console.log("bmp:" ,newPosition.bpm)
+              if (newPosition.bpm < 40 ){
+                marker.setAnimation(google.maps.Animation.BOUNCE);
+                marker.setIcon(image);
+              }else{
+                marker.setAnimation(google.maps.Animation.NULL);
+                marker.setIcon(image2);
+              }
+              //marker.addListener('click', toggleBounce);
+              
           });
         }
 
-
+        function toggleBounce() {
+          if (marker.getAnimation() !== null) {
+            marker.setAnimation(null);
+          } else {
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+          }
+        }
 
         google.maps.event.addDomListener(window, "load", initMap);
     
