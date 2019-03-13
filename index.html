@@ -331,18 +331,18 @@
             ]
           });
 
-
-
-          var contentString2 = '<div id="content">'+
+          var contentString = '<div id="content">'+
             '<div id="siteNotice">'+
             '</div>'+
             '<h1 id="firstHeading" class="firstHeading">Personel 1</h1>'+
             '<div id="bodyContent">'+
-            '<p><b>Stable</b>, detected heart rate' +
+            '<p><b>Alert!</b>, abnormalities detected in heart rate' +
             '<b> BMP: <b>'+
             '</p>'+
             '</div>'+
             '</div>';
+
+            
           
           var myLatLng = {lat: 53.363, lng: -9.044};
 
@@ -415,29 +415,6 @@
               marker.setPosition(latLng);
               marker.setTitle('BMP: ' + newPosition.bpm);
 
-
-              var contentString2 = '<div id="content">'+
-              '<div id="siteNotice">'+
-              '</div>'+
-              '<h1 id="firstHeading" class="firstHeading">Personel 1</h1>'+
-              '<div id="bodyContent">'+
-              '<p><b>Stable</b>, detected heart rate' +
-              '<b> BMP: <b>'+
-              '</p>'+
-              '</div>'+
-              '</div>';
-
-              var contentString = '<div id="content">'+
-                '<div id="siteNotice">'+
-                '</div>'+
-                '<h1 id="firstHeading" class="firstHeading">Personel 1</h1>'+
-                '<div id="bodyContent">'+
-                '<p><b>Alert!</b>, abnormalities detected in heart rate' +
-                '<b> BMP: <b>'+
-                '</p>'+
-                '</div>'+
-                '</div>';
-
               marker.addListener('click', function() {
                 infowindow.open(map, marker);
               });
@@ -446,15 +423,14 @@
               if (newPosition.bpm < 40 ){
                 marker.setAnimation(google.maps.Animation.BOUNCE);
                 marker.setIcon(image);
-                infoWindow.setContent(contentString);
+                infoWindow.setPosition(pos);
+                infoWindow.setContent('Alert! BMP too low at: '+ newPosition.bpm);
                 infoWindow.open(map);
                 
                 
               }else{
                 marker.setAnimation(google.maps.Animation.NULL);
                 marker.setIcon(image2);
-                infoWindow.setContent(contentString);
-                infoWindow.open(map);
                 
               }
               //marker.addListener('click', toggleBounce);
