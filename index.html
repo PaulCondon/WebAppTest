@@ -331,6 +331,18 @@
             ]
           });
 
+
+
+          var contentString2 = '<div id="content">'+
+            '<div id="siteNotice">'+
+            '</div>'+
+            '<h1 id="firstHeading" class="firstHeading">Personel 1</h1>'+
+            '<div id="bodyContent">'+
+            '<p><b>Stable</b>, detected heart rate' +
+            '<b> BMP: <b>'+
+            '</p>'+
+            '</div>'+
+            '</div>';
           
           var myLatLng = {lat: 53.363, lng: -9.044};
 
@@ -341,16 +353,19 @@
             animation: google.maps.Animation.DROP,
           });
 
-          infoWindow = new google.maps.InfoWindow;
+          // infoWindow = new google.maps.InfoWindow;
 
-          var pos = {
-              lat: 53.2707, 
-              lng: -9.0568
-            }
-          infoWindow.setPosition(pos);
-            infoWindow.setContent('Hazardous area.');
-            infoWindow.open(map);
+          // var pos = {
+          //     lat: 53.2707, 
+          //     lng: -9.0568
+          //   }
+          // infoWindow.setPosition(pos);
+          // infoWindow.setContent('Hazardous area.');
+          // infoWindow.open(map);
 
+          var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
             
           // map.addListener('click', function(e) {
           //   firebase.push({
@@ -398,14 +413,49 @@
               newPosition.lng);
 
               marker.setPosition(latLng);
+              marker.setTitle('BMP: ' + newPosition.bpm);
+
+
+              var contentString2 = '<div id="content">'+
+              '<div id="siteNotice">'+
+              '</div>'+
+              '<h1 id="firstHeading" class="firstHeading">Personel 1</h1>'+
+              '<div id="bodyContent">'+
+              '<p><b>Stable</b>, detected heart rate' +
+              '<b> BMP: <b>'+
+              '</p>'+
+              '</div>'+
+              '</div>';
+
+              var contentString = '<div id="content">'+
+                '<div id="siteNotice">'+
+                '</div>'+
+                '<h1 id="firstHeading" class="firstHeading">Personel 1</h1>'+
+                '<div id="bodyContent">'+
+                '<p><b>Alert!</b>, abnormalities detected in heart rate' +
+                '<b> BMP: <b>'+
+                '</p>'+
+                '</div>'+
+                '</div>';
+
+              marker.addListener('click', function() {
+                infowindow.open(map, marker);
+              });
 
               console.log("bmp:" ,newPosition.bpm)
               if (newPosition.bpm < 40 ){
                 marker.setAnimation(google.maps.Animation.BOUNCE);
                 marker.setIcon(image);
+                infoWindow.setContent(contentString);
+                infoWindow.open(map);
+                
+                
               }else{
                 marker.setAnimation(google.maps.Animation.NULL);
                 marker.setIcon(image2);
+                infoWindow.setContent(contentString);
+                infoWindow.open(map);
+                
               }
               //marker.addListener('click', toggleBounce);
               
