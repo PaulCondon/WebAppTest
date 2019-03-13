@@ -331,18 +331,9 @@
             ]
           });
 
-          var contentString = '<div id="content">'+
-            '<div id="siteNotice">'+
-            '</div>'+
-            '<h1 id="firstHeading" class="firstHeading">Personel 1</h1>'+
-            '<div id="bodyContent">'+
-            '<p><b>Alert!</b>, abnormalities detected in heart rate' +
-            '<b> BMP: <b>'+
-            '</p>'+
-            '</div>'+
-            '</div>';
 
-            
+
+
           
           var myLatLng = {lat: 53.363, lng: -9.044};
 
@@ -363,9 +354,7 @@
           // infoWindow.setContent('Hazardous area.');
           // infoWindow.open(map);
 
-          var infowindow = new google.maps.InfoWindow({
-          content: contentString
-        });
+
             
           // map.addListener('click', function(e) {
           //   firebase.push({
@@ -412,29 +401,58 @@
             var latLng = new google.maps.LatLng(newPosition.lat,
               newPosition.lng);
 
+              var contentStringStable = '<div id="content">'+
+                '<div id="siteNotice">'+
+                '</div>'+
+                '<h1 id="firstHeading" class="firstHeading">Personel 1</h1>'+
+                '<div id="bodyContent">'+
+                '<p><b>Stable</b>, detected heart rate ' +
+                '<b> BMP: <b>'+ newPosition.bpm +
+                '</p>'+
+                '</div>'+
+                '</div>';
+
+              var contentStringAlert = '<div id="content">'+
+                '<div id="siteNotice">'+
+                '</div>'+
+                '<h1 id="firstHeading" class="firstHeading">Personel 1   Alert!</h1>'+
+                '<div id="bodyContent">'+
+                '<p><b></b> abnormalities detected in heart rate, ' +
+                '<b> BMP: <b>'+ newPosition.bpm +
+                '</p>'+
+                '</div>'+
+                '</div>';
+
+
+
               marker.setPosition(latLng);
               marker.setTitle('BMP: ' + newPosition.bpm);
 
-              marker.addListener('click', function() {
-                infowindow.open(map, marker);
-              });
 
               console.log("bmp:" ,newPosition.bpm)
               if (newPosition.bpm < 40 ){
                 marker.setAnimation(google.maps.Animation.BOUNCE);
                 marker.setIcon(image);
-                infoWindow.setPosition(pos);
-                infoWindow.setContent('Alert! BMP too low at: '+ newPosition.bpm);
-                infoWindow.open(map);
-                
+
+                //infoWindow.setContent(contentStringAlert);   
+                var infowindow = new google.maps.InfoWindow({
+                content: contentStringAlert
+                });             
                 
               }else{
                 marker.setAnimation(google.maps.Animation.NULL);
                 marker.setIcon(image2);
+                var infowindow = new google.maps.InfoWindow({
+                content: contentStringStable
+                });
                 
               }
               //marker.addListener('click', toggleBounce);
               
+              marker.addListener('click', function() {
+                infowindow.open(map, marker);
+              });
+
           });
         }
 
